@@ -28,11 +28,11 @@ After a very long search, I found
 which gave me the starting point. There are several limitations with the code
 in that post:
 
-* It only handles with xpath locators
+* It only handles xpath locators
 * It does not work with `List<WebElement>`, only with single elements
 * It cannot be combined with any other annotations on the fields in the class
-* It is re-reading the file every time it tries to resolve locator
-* The file with locators needed to be specified in the source code
+* It is re-reading the file every time it tries to resolve a locator
+* The file with locators needs to be specified in the source code
 
 I set about to address all of these shortcomings. This repo contains my
 solution all of the above problems.
@@ -54,7 +54,7 @@ Usage
 Using this annotation is very simple. Start by creating a JSON file with
 locators, e.g. `locators.json`. The content is self-explanatory.
 
-```
+```javascript
 [
   {
     "page": "myPage",
@@ -65,8 +65,8 @@ locators, e.g. `locators.json`. The content is self-explanatory.
   {
     "page": "myPage",
     "name": "myCollection",
-    "type": "css",
-    "locator": ".header .a"
+    "type": "className",
+    "locator": "list-item"
   },
   ...
 ]
@@ -76,7 +76,7 @@ This file can be placed in any directory on disk or added to resources.
 
 Now start using the `@SearchWith` annotation in page objects:
 
-```
+```java
 public class MyPage {
     protected WebDriver driver;
     
@@ -98,10 +98,10 @@ public class MyPage {
 }
 ```
 
-As the `locatorsFile` specified has `{}`, the actual filename would be
+As the specified `locatorsFile` has `{}`, the actual filename will be
 retrieved from system property `locators.file`.  Simply add
-`-Dlocators.file=locators.json` to your command line.
+`-Dlocators.file=/path/to/locators.json` to your command line.
 
 You can also specify `-Dlocators.file=[locators.json]`, in which case
-system property `locators.json` would be retrieved and file `locators.json`
+system property `locators.json` will be retrieved and file `locators.json`
 from resources would be used to load locators.
