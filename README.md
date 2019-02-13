@@ -17,7 +17,7 @@ One way of doing it would be to put locators in property files, then indicate
 which property file to load during the runtime. This however would not allow
 to use PageFactory model. A more comlex solution was needed.  Digging into
 selenium API details, we realised that we need to build custom
-`ElementLocator` and `ElementLocatorFactory` along withe a custom annotation
+`ElementLocator` and `ElementLocatorFactory` along with a custom annotation
 to handle loading locators from a file.
 
 Approach
@@ -80,10 +80,10 @@ Now start using the `@SearchWith` annotation in page objects:
 public class MyPage {
     protected WebDriver driver;
     
-    @SearchWith(page="myPage", name="myField", locatorsFile="{locators.file}"
+    @SearchWith(page="myPage", name="myField", locatorsFile="{locators.file}")
     private WebElement myField;
     
-    @SearchWith(page="myPage", name="myCollection", locatorsFile="{locators.file}"
+    @SearchWith(page="myPage", name="myCollection", locatorsFile="{locators.file}")
     private List<WebElement> myCollection;
     
     @FindBy(id="myId")
@@ -103,5 +103,5 @@ retrieved from system property `locators.file`.  Simply add
 `-Dlocators.file=/path/to/locators.json` to your command line.
 
 You can also specify `-Dlocators.file=[locators.json]`, in which case
-system property `locators.json` will be retrieved and file `locators.json`
+system property `locators.file` will be retrieved and file `locators.json`
 from resources would be used to load locators.
