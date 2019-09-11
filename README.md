@@ -15,7 +15,7 @@ locators.
 
 One way of doing it would be to put locators in property files, then indicate
 which property file to load during the runtime. This however would not allow
-to use PageFactory model. A more comlex solution was needed.  Digging into
+to use PageFactory model. A more complex solution was needed.  Digging into
 selenium API details, we realised that we need to build custom
 `ElementLocator` and `ElementLocatorFactory` along with a custom annotation
 to handle loading locators from a file.
@@ -48,6 +48,8 @@ custom `@SearchWith` annotation for other
 * List of elements are handled correctly
 * All valid locator types are supported
 
+I have further updated the format of the JSON file to make it easier to read and quicker to parse.
+
 Usage
 -
 
@@ -55,21 +57,20 @@ Using this annotation is very simple. Start by creating a JSON file with
 locators, e.g. `locators.json`. The content is self-explanatory.
 
 ```javascript
-[
-  {
-    "page": "myPage",
-    "name": "myField",
-    "type": "css",
-    "locator": ".header h2"
-  },
-  {
-    "page": "myPage",
-    "name": "myCollection",
-    "type": "className",
-    "locator": "list-item"
+{
+  "myPage" : {
+    "myField" : {
+      "type" : "css",
+      "locator": ".header h2"
+    },
+    "myCollection" : {
+      "type" : "className",
+      "locator" : "list-item"
+    },
+    ...
   },
   ...
-]
+}
 ```
 
 This file can be placed in any directory on disk or added to resources.
@@ -104,4 +105,4 @@ retrieved from system property `locators.file`.  Simply add
 
 You can also specify `-Dlocators.file=[locators.json]`, in which case
 system property `locators.file` will be retrieved and file `locators.json`
-from resources would be used to load locators.
+from resources will be used to load locators.
