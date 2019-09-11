@@ -13,7 +13,6 @@ import java.net.URL;
 
 public class GoogleResultsPage extends BasePage {
     private final static String GOOGLE_RESULTS_PAGE = "GoogleResultsPage";
-    private WebDriver driver;
 
     @FindBy(name="q")
     private WebElement searchField;
@@ -35,7 +34,7 @@ public class GoogleResultsPage extends BasePage {
     }
 
     public String getSearchTermInField() {
-        return searchField.getText();
+        return searchField.getAttribute("value");
     }
 
     public void search(String term) {

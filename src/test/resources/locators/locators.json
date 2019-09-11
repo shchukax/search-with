@@ -1,0 +1,19 @@
+{
+  "GoogleHomepage": {
+    "searchButton": {
+      "type": "name",
+      "locator": "btnK"
+    },
+    "luckyButton": {
+      "type": "name",
+      "locator": "btnI"
+    }
+  },
+
+  "GoogleResultsPage": {
+    "searchButton": {
+      "type": "css",
+      "locator": "#searchform button"
+    }
+  }
+}
