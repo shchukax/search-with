@@ -65,79 +65,74 @@ public class SearchWithProvider {
                 reader = new FileReader(locatorsFile);
             }
 
-            JsonArray array = new JsonParser().parse(reader).getAsJsonArray();
+            JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
             reader.close();
-            Iterator<JsonElement> iterator = array.iterator();
+            Iterator<String> iterator = object.keySet().iterator();
 
+            JsonObject pageLevel;
             Map<String, By> pageLocators;
+            Iterator<String> pageIterator;
+            JsonObject oneLocator;
             String page;
             String name;
             String type;
             String locator;
             By by;
 
-            while (iterator.hasNext()) {
-                JsonObject object = iterator.next().getAsJsonObject();
+            while(iterator.hasNext()) {
+                page = iterator.next();
+                pageLevel = object.getAsJsonObject(page);
 
-                if (object.get("page") != null) {
-                    page = object.get("page").getAsString();
-                } else {
-                    throw new IllegalArgumentException("Missing required property - page");
-                }
+                pageLocators = new ConcurrentHashMap<>();
+                locators.put(page, pageLocators);
 
-                if (object.get("name") != null) {
-                    name = object.get("name").getAsString();
-                } else {
-                    throw new IllegalArgumentException("Missing required property - name");
-                }
+                pageIterator = pageLevel.keySet().iterator();
+                while (pageIterator.hasNext()) {
+                    name = pageIterator.next();
+                    oneLocator = pageLevel.get(name).getAsJsonObject();
 
-                if (object.get("type") != null) {
-                    type = object.get("type").getAsString();
-                } else {
-                    throw new IllegalArgumentException("Missing required property - type");
-                }
+                    if (oneLocator.get("type") != null) {
+                        type = oneLocator.get("type").getAsString();
+                    } else {
+                        throw new IllegalArgumentException("Missing required property - type - for locator " + page + "/" + name);
+                    }
 
-                if (object.get("locator") != null) {
-                    locator = object.get("locator").getAsString();
-                } else {
-                    throw new IllegalArgumentException("Missing required property - locator");
-                }
+                    if (oneLocator.get("locator") != null) {
+                        locator = oneLocator.get("locator").getAsString();
+                    } else {
+                        throw new IllegalArgumentException("Missing required property - locator - for locator " + page + "/" + name);
+                    }
 
-                pageLocators = locators.get(page);
-                if (pageLocators == null) {
-                    pageLocators = new ConcurrentHashMap<>();
-                    locators.put(page, pageLocators);
+                    switch (type) {
+                        case "id":
+                            by = By.id(locator);
+                            break;
+                        case "css":
+                            by = By.cssSelector(locator);
+                            break;
+                        case "className":
+                            by = By.className(locator);
+                            break;
+                        case "xpath":
+                            by = By.xpath(locator);
+                            break;
+                        case "linkText":
+                            by = By.linkText(locator);
+                            break;
+                        case "partialLinkText":
+                            by = By.partialLinkText(locator);
+                            break;
+                        case "name":
+                            by = By.name(locator);
+                            break;
+                        case "tagName":
+                            by = By.tagName(locator);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unsupported locator type - " + type);
+                    }
+                    pageLocators.put(name, by);
                 }
-
-                switch (type) {
-                    case "id":
-                        by = By.id(locator);
-                        break;
-                    case "css":
-                        by = By.cssSelector(locator);
-                        break;
-                    case "className":
-                        by = By.className(locator);
-                        break;
-                    case "xpath":
-                        by = By.xpath(locator);
-                        break;
-                    case "linkText":
-                        by = By.linkText(locator);
-                        break;
-                    case "partialLinkText":
-                        by = By.partialLinkText(locator);
-                        break;
-                    case "name":
-                        by = By.name(locator);
-                        break;
-                    case "tagName":
-                        by = By.tagName(locator);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unsupported locator type - " + type);
-                }
-                pageLocators.put(name, by);
             }
         } catch (JsonIOException | JsonSyntaxException e) {
             throw new IllegalArgumentException("Error parsing locators file " + locatorsFile, e);
