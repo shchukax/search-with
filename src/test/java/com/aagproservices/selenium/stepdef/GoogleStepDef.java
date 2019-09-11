@@ -3,13 +3,13 @@ package com.aagproservices.selenium.stepdef;
 import com.aagproservices.selenium.page.BasePage;
 import com.aagproservices.selenium.page.GoogleHomepage;
 import com.aagproservices.selenium.page.GoogleResultsPage;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.After;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
@@ -31,10 +31,17 @@ public class GoogleStepDef {
         return driver;
     }
 
+    @After
+    public void tearDown() {
+        driver.quit();
+        driver = null;
+    }
+
     @Given("^I navigate to google home page$")
     public void navigateToGoogleHomePage() throws MalformedURLException {
         getDriver().navigate().to("https://www.google.com");
     }
+
 
     @When("I search for term {string}")
     public void searchForTerm(String term) throws MalformedURLException {
